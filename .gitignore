@@ -1,0 +1,34 @@
+# Build output
+target/
+!.mvn/wrapper/maven-wrapper.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Secrets and local configuration (never commit credentials)
+.env
+.env.*
+!.env.example
+application-local.yml
+application-local.properties
+
+# Logs
+*.log
+logs/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse / VS Code Java
+.classpath
+.project
+.settings/
+.factorypath
+bin/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

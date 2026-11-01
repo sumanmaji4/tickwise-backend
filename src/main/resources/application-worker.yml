@@ -1,0 +1,10 @@
+# Background worker: same codebase, no public API traffic. Keeps a web server on a separate port
+# for Actuator health and metrics only.
+server:
+  port: ${WORKER_PORT:8081}
+
+tickwise:
+  worker:
+    escalation-poll: PT1S
+    inbound-poll: PT1S
+    outbound-poll: PT2S

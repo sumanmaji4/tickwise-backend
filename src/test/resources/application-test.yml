@@ -1,0 +1,18 @@
+tickwise:
+  security:
+    jwt:
+      secret: test-only-secret-0123456789-abcdefghijklmnop
+  intake:
+    rate-limit:
+      per-client: 10000
+      per-tenant: 10000
+  storage:
+    access-key: test
+    secret-key: test
+    create-bucket: false
+  email:
+    provider: log
+    webhook:
+      mode: hmac
+      header: X-Tickwise-Signature
+      secret: test-webhook-secret

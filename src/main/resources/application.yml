@@ -1,0 +1,105 @@
+spring:
+  application:
+    name: tickwise
+  config:
+    # Local development: KEY=VALUE pairs from backend/.env (git-ignored; options in README) are
+    # read as properties, so the ${TICKWISE_...} placeholders below resolve from it. Real
+    # environment variables still win, and the file is optional (containers don't have one).
+    import: optional:file:.env[.properties]
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${TICKWISE_DB_URL:jdbc:postgresql://localhost:5432/tickwise}
+    username: ${TICKWISE_DB_USER:tickwise}
+    password: ${TICKWISE_DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+  mvc:
+    problemdetails:
+      enabled: true
+  jackson:
+    default-property-inclusion: non_null
+    time-zone: UTC
+  data:
+    redis:
+      host: ${TICKWISE_REDIS_HOST:localhost}
+      port: ${TICKWISE_REDIS_PORT:6379}
+      password: ${TICKWISE_REDIS_PASSWORD:}
+
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+
+tickwise:
+  # Public URL of the dashboard, used in invitation links.
+  frontend-url: ${TICKWISE_FRONTEND_URL:http://localhost:3000}
+  security:
+    jwt:
+      # Required. HS256 key, at least 32 bytes. Supply via environment, never commit it.
+      secret: ${TICKWISE_JWT_SECRET:}
+      issuer: tickwise
+      ttl: ${TICKWISE_JWT_TTL:PT1H}
+    cors-allowed-origins: ${TICKWISE_CORS_ORIGINS:http://localhost:3000}
+  seed:
+    password: ${TICKWISE_SEED_PASSWORD:}
+  intake:
+    rate-limit:
+      per-client: ${TICKWISE_FORM_RATE_PER_CLIENT:5}
+      per-tenant: ${TICKWISE_FORM_RATE_PER_TENANT:120}
+      window: PT1M
+  storage:
+    endpoint: ${TICKWISE_S3_ENDPOINT:http://localhost:9000}
+    region: ${TICKWISE_S3_REGION:us-east-1}
+    bucket: ${TICKWISE_S3_BUCKET:tickwise-attachments}
+    access-key: ${TICKWISE_S3_ACCESS_KEY:}
+    secret-key: ${TICKWISE_S3_SECRET_KEY:}
+    create-bucket: ${TICKWISE_S3_CREATE_BUCKET:true}
+  email:
+    # log | mailpit | brevo
+    provider: ${TICKWISE_EMAIL_PROVIDER:log}
+    inbound-domain: ${TICKWISE_INBOUND_DOMAIN:inbound.tickwise.test}
+    from-address: ${TICKWISE_EMAIL_FROM:support@tickwise.test}
+    from-name: Tickwise
+    mailpit-url: ${TICKWISE_MAILPIT_URL:http://localhost:8025}
+    brevo-api-url: https://api.brevo.com
+    brevo-api-key: ${TICKWISE_BREVO_API_KEY:}
+    max-attachment-size: 10MB
+    max-webhook-payload: 25MB
+    webhook:
+      mode: ${TICKWISE_WEBHOOK_MODE:hmac}
+      header: ${TICKWISE_WEBHOOK_HEADER:X-Tickwise-Signature}
+      secret: ${TICKWISE_WEBHOOK_SECRET:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  # Plain text locally. Containers set LOGGING_STRUCTURED_FORMAT_CONSOLE=ecs for JSON logs;
+  # MDC keys (requestId, tenantId, userId) are then emitted as fields automatically.
+  pattern:
+    correlation: "[req=%X{requestId:-} tenant=%X{tenantId:-} user=%X{userId:-}] "
