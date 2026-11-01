@@ -1,7 +1,6 @@
 # Tickwise: Support & SLA Desk (backend)
 
-> **This repository is the backend** (Java 21, Spring Boot 3.5).
-> The dashboard lives in the frontend repository: **[Tickwise frontend → README](../frontend/README.md)**
+Frontend repository: https://github.com/sumanmaji4/tickwise
 
 Companies receive support requests by email and web forms. Without a system, requests get lost,
 nobody owns them, and SLA promises are breached silently. Tickwise turns every request into a
